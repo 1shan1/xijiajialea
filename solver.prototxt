@@ -1,0 +1,19 @@
+net: "/data_2/my_bishe_experiment/switch_classification/switch_class_64ch.prototxt"
+test_iter: 9000
+test_interval: 10000
+base_lr: 0.00001
+display: 1000
+max_iter: 2000000
+#lr_policy: "fixed"
+lr_policy: "step"
+average_loss: 1000
+gamma: 0.1   
+stepsize: 300000
+momentum: 0.9
+weight_decay: 0 #.0001
+#weight_decay: 0.0001
+snapshot: 5000
+snapshot_prefix: "/data_2/my_bishe_experiment/switch_classification/snapshots_64/model"
+solver_mode: GPU
+type: "Adam"
+

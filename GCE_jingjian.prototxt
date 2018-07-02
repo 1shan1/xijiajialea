@@ -1,0 +1,374 @@
+# Enter your network definition here.
+# Use Shift+Enter to update the visualization.
+# Enter your network definition here.
+# Use Shift+Enter to update the visualization.
+layer {
+  name: "dir_input_python"
+  type: "Python"
+  top: "data"
+  top: "label"
+  include {
+    phase:TRAIN
+  }
+
+  python_param{
+      module:"pythonLayer"
+      layer: "data_Layer"
+      param_str:"{'source':'/data_2/my_bishe_experiment/switch_classification/three_class/train.txt'}" 
+  }
+}
+
+layer {
+  name: "dir_input_python"
+  type: "Python"
+  top: "data"
+  top: "label"
+  include {
+    phase:TEST
+  }
+    
+  python_param{
+      module:"pythonLayer"
+      layer: "data_Layer"
+      param_str:"{'source':'/data_2/my_bishe_experiment/switch_classification/three_class/val.txt'}" 
+  }
+}
+
+##################################
+layer {
+  name: "c3_conv1"
+  type: "Convolution"
+  bottom: "data"
+  top: "c3_conv1"
+  param {
+    lr_mult: 1
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 64
+    kernel_size: 3
+    stride: 1
+     weight_filler {
+      type: "xavier"
+	}
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+
+layer {
+  name: "prelu1"
+  type: "PReLU"
+  bottom: "c3_conv1"
+  top: "c3_conv1"
+}
+
+layer {
+  name: "c3_pool1"
+  type: "Pooling"
+  bottom: "c3_conv1"
+  top: "c3_pool1"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+
+
+
+layer {
+  name: "c3_conv2"
+  type: "Convolution"
+  bottom: "c3_pool1"
+  top: "c3_conv2"
+  param {
+    lr_mult: 1
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+    num_output: 128
+    kernel_size: 3
+    stride: 1
+     weight_filler {
+      type: "xavier"
+	}
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+
+layer {
+  name: "prelu2"
+  type: "PReLU"
+  bottom: "c3_conv2"
+  top: "c3_conv2"
+}
+layer {
+  name: "c3_pool2"
+  type: "Pooling"
+  bottom: "c3_conv2"
+  top: "c3_pool2"
+  pooling_param {
+    pool: MAX
+    kernel_size: 3
+    stride: 2
+  }
+}
+
+
+
+
+
+
+layer {
+  name: "c3_conv3"
+  type: "Convolution"
+  bottom: "c3_pool2"
+  top: "c3_conv3"
+  param {
+    lr_mult: 1
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+	num_output: 256
+	kernel_size: 3
+    weight_filler {
+      type: "xavier"
+	}
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+layer {
+  name: "prelu3"
+  type: "PReLU"
+  bottom: "c3_conv3"
+  top: "c3_conv3"
+}
+layer {
+  name: "c3_pool3"
+  type: "Pooling"
+  bottom: "c3_conv3"
+  top: "c3_pool3"
+  pooling_param {
+    pool: MAX
+    kernel_size: 2
+    stride: 1
+  }
+}
+
+
+
+
+
+layer {
+  name: "c3_conv4"
+  type: "Convolution"
+  bottom: "c3_pool3"
+  top: "c3_conv4"
+  param {
+    lr_mult: 1
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  convolution_param {
+	num_output: 512
+	kernel_size: 2
+    weight_filler {
+      type: "xavier"
+	}
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+  propagate_down : 0
+}
+layer {
+  name: "prelu4"
+  type: "PReLU"
+  bottom: "c3_conv4"
+  top: "c3_conv4"
+}
+
+
+layer {
+  name: "c3_conv5"
+  type: "InnerProduct"
+  bottom: "c3_conv4"
+  top: "c3_conv5"
+  param {
+    lr_mult: 1
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+	#kernel_size: 3
+	num_output: 256
+    weight_filler {
+      type: "xavier"
+	}
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+  
+}
+
+
+layer {
+  name: "prelu5_a"
+  type: "PReLU"
+  bottom: "c3_conv5"
+  top: "c3_conv5"
+}
+
+
+
+
+layer {
+  name: "c3_conv6"
+  type: "InnerProduct"
+  bottom: "c3_conv5"
+  top: "c3_conv6"
+  param {
+    lr_mult: 1
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+   inner_product_param {
+  	#kernel_size: 1
+	num_output: 128
+    weight_filler {
+      type: "xavier"
+	}
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+  
+}
+layer {
+  name: "prelu6_a"
+  type: "PReLU"
+  bottom: "c3_conv6"
+  top: "c3_conv6"
+}
+
+
+layer {
+  name: "c3_conv7"
+  type: "InnerProduct"
+  bottom: "c3_conv6"
+  top: "c3_conv7"
+  param {
+    lr_mult: 1
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+   inner_product_param {
+  	#kernel_size: 1
+	num_output: 64
+    weight_filler {
+      type: "xavier"
+	}
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+
+ 
+}
+layer {
+  name: "prelu7_a"
+  type: "PReLU"
+  bottom: "c3_conv7"
+  top: "c3_conv7"
+}
+
+
+
+layer {
+  name: "conv7-4_a"
+  type: "InnerProduct"
+  bottom: "c3_conv7"
+  top: "conv7-4_a"
+  param {
+    lr_mult: 1
+    decay_mult: 0
+  }
+  param {
+    lr_mult: 2
+    decay_mult: 0
+  }
+  inner_product_param {
+	num_output: 3
+    weight_filler {
+      type: "xavier"
+	}
+    bias_filler {
+      type: "constant"
+      value: 0
+    }
+  }
+}
+
+
+
+layer {
+  name: "pose_loss_a"
+  type: "SoftmaxWithLoss"
+  bottom: "conv7-4_a"
+  bottom: "label"
+  top: "pose_loss_a"
+  loss_weight:1.0
+  propagate_down : 1
+  propagate_down : 0
+}
+
+layer {
+  name: "accuracy"
+  type: "Accuracy"
+  bottom: "conv7-4_a"
+  bottom: "label"
+  top: "accuracy"
+  include: { phase: TEST }
+}
+
+####################################################################
+
+
